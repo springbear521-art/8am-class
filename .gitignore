@@ -1,0 +1,6 @@
+build/
+.keys/
+.tools/
+*.der
+*.pem
+*.key
