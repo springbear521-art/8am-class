@@ -4,3 +4,4 @@ build/
 *.der
 *.pem
 *.key
+dist/*.iq
