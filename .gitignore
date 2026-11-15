@@ -5,3 +5,6 @@ build/
 *.pem
 *.key
 dist/*.iq
+dist/*.TXT
+dist/*.zip
+device-logs/
