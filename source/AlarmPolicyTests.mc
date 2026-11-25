@@ -3,6 +3,18 @@ import Toybox.Test;
 
 // These cases check user-visible scheduling boundaries, independent of device time.
 (:test)
+function alarmEarlyWindowStartsExactlyTwentyMinutesBeforeDeadline(logger as Test.Logger) as Boolean {
+    // 06:40 deadline; 06:19:59 cannot start sampling or trigger an early alert.
+    var deadline = 1700000000;
+    Test.assertEqual(AlarmPolicy.EARLY_WAKE_SECONDS, 1200);
+    Test.assertEqual(AlarmPolicy.inEarlyWindow(deadline - 1201, deadline), false);
+    Test.assertEqual(AlarmPolicy.inEarlyWindow(deadline - 1200, deadline), true);
+    Test.assertEqual(AlarmPolicy.inEarlyWindow(deadline - 1, deadline), true);
+    Test.assertEqual(AlarmPolicy.inEarlyWindow(deadline, deadline), false);
+    return true;
+}
+
+(:test)
 function alarmDeadlineStaysOnTheMinute(logger as Test.Logger) as Boolean {
     var now = 1700000000;
     Test.assertEqual(AlarmPolicy.nextDeadline(480, now, 420, 10) - now, 3590);

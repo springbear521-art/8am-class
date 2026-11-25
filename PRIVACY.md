@@ -8,9 +8,9 @@ This policy applies to **8 AM Class (我上早八)**, the Connect IQ app for Gar
 
 ## Data the app uses / 应用使用的数据
 
-While the app is running, it reads the watch clock, motion sensor data, available heart-rate readings, device status such as Do Not Disturb and battery level, and the configured sleep and wake times in the Garmin user profile. Motion and heart-rate information is used to decide whether to alert within the 30-minute early-wake window. The configured wake time is used only if you choose to import it. The app does not read Garmin's recorded sleep stages or actual sleep duration.
+While the app is running, it reads the watch clock, motion sensor data, available heart-rate readings, device status such as Do Not Disturb and battery level, and the configured sleep and wake times in the Garmin user profile. Motion and heart-rate sampling starts 20 minutes before the alarm deadline and is used to decide whether to alert within that 20-minute early-wake window. The configured wake time is used only if you choose to import it. The app does not read Garmin's recorded sleep stages or actual sleep duration.
 
-应用运行时会读取手表时间、动作传感器数据、可用的心率读数、勿扰模式和电量等设备状态，以及 Garmin 用户资料中配置的睡眠和起床时刻。动作和心率用于判断是否在最晚起床时间前 30 分钟内提前提醒。只有你选择导入时，应用才会将配置的起床时刻用作闹钟。应用不读取 Garmin 记录的睡眠分期或实际睡眠时长。
+应用运行时会读取手表时间、动作传感器数据、可用的心率读数、勿扰模式和电量等设备状态，以及 Garmin 用户资料中配置的睡眠和起床时刻。动作与心率采样从最晚起床时间前20分钟开始，并仅用于判断是否在这20分钟内提前提醒。只有你选择导入时，应用才会将配置的起床时刻用作闹钟。应用不读取 Garmin 记录的睡眠分期或实际睡眠时长。
 
 ## Data stored on the watch / 保存在手表上的数据
 

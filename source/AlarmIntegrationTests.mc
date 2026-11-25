@@ -34,6 +34,10 @@ function alarmIntegrationPersistsTriggersAndRepeats(logger as Test.Logger) as Bo
             "Arming must persist the selected fixed alarm time");
         var deadline = view._deadline;
 
+        view.ring(deadline - AlarmPolicy.EARLY_WAKE_SECONDS - 1, "movement");
+        Test.assertEqualMessage(view._state, 1,
+            "Movement must not trigger before the 20-minute window");
+
         view.checkAlarm(deadline);
         Test.assertEqualMessage(view._state, 2, "Deadline check must enter ringing state");
         Test.assertEqualMessage(view._triggerReason, "deadline",

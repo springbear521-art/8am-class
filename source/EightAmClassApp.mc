@@ -115,7 +115,7 @@ class EightAmClassView extends WatchUi.View {
         if (repeat != null) { _repeatDaily = repeat; }
         _summary = loadValue("lastSessionV1");
         _lastTriggered = loadValue("lastTriggeredSessionV1");
-        _log.add("boot", "version=0.2.1 native_sleep_s=NA", true);
+        _log.add("boot", "version=0.2.2 native_sleep_s=NA", true);
     }
 
     function loadValue(key) {
@@ -321,7 +321,8 @@ class EightAmClassView extends WatchUi.View {
         _timer.stop();
         _timer.start(method(:onTick), 5000, true);
         _log.add("armed", "deadline=" + _deadline + " fixed_min=" + _fixedMinutes +
-            " repeat=" + _repeatDaily + " tone=" + _soundMode + " vibe=" + _vibeMode, true);
+            " repeat=" + _repeatDaily + " tone=" + _soundMode + " vibe=" + _vibeMode +
+            " early_window_s=" + AlarmPolicy.EARLY_WAKE_SECONDS, true);
         try {
             var profile = UserProfile.getProfile();
             _log.add("planned_schedule", "bed_s=" +
@@ -400,7 +401,8 @@ class EightAmClassView extends WatchUi.View {
         var now = Time.now().value();
         checkAlarm(now);
         if (_state == 1) {
-            if (!_sensorOn && !_sensorUnavailable && now >= _deadline - 35 * 60) {
+            if (!_sensorOn && !_sensorUnavailable &&
+                AlarmPolicy.inEarlyWindow(now, _deadline)) {
                 startSensor();
             }
         }
@@ -473,7 +475,8 @@ class EightAmClassView extends WatchUi.View {
                 :accelerometer => { :enabled => true, :sampleRate => 5 }
             });
             _sensorOn = true;
-            _log.add("sensor_start", "rate_hz=5 native_sleep_s=NA", true);
+            _log.add("sensor_start", "rate_hz=5 early_window_s=" +
+                AlarmPolicy.EARLY_WAKE_SECONDS + " native_sleep_s=NA", true);
         } catch (ex) {
             // The fixed latest wake time still works if sampling is unavailable.
             _sensorOn = false;
@@ -500,6 +503,7 @@ class EightAmClassView extends WatchUi.View {
             ring(now, "deadline");
             return;
         }
+        if (!AlarmPolicy.inEarlyWindow(now, _deadline)) { return; }
         if (data.accelerometerData == null) { return; }
         var sampleSeconds = _lastSampleAt == 0 ? 1 : now - _lastSampleAt;
         _lastSampleAt = now;
@@ -545,7 +549,7 @@ class EightAmClassView extends WatchUi.View {
             _quietSampledSeconds += sampleSeconds;
         } else {
             // Require a quiet period followed by sustained movement, not one jolt.
-            if (_quietSeconds >= 90 && now >= _deadline - 30 * 60) {
+            if (_quietSeconds >= 90) {
                 _candidateUntil = now + 20;
                 _motionSeconds = 0;
                 _log.add("candidate", "quiet_s=" + _quietSeconds +
@@ -574,6 +578,9 @@ class EightAmClassView extends WatchUi.View {
 
     function ring(now, reason) {
         if (_state != 1) { return; }
+        if (!reason.equals("deadline") && !AlarmPolicy.inEarlyWindow(now, _deadline)) {
+            return;
+        }
         stopSensor();
         _state = 2;
         _triggerReason = reason;
@@ -650,7 +657,7 @@ class EightAmClassView extends WatchUi.View {
             line(dc, 155, Graphics.FONT_SMALL, tr("Daily: rearm on stop", "每日重复在设置中改"));
             line(dc, 185, Graphics.FONT_SMALL, tr("Keep app open", "需要应用保持打开"));
         } else if (_manualPage == 2) {
-            line(dc, 95, Graphics.FONT_SMALL, tr("30 min wake window", "提前30分钟监测"));
+            line(dc, 95, Graphics.FONT_SMALL, tr("20 min wake window", "提前20分钟监测"));
             line(dc, 125, Graphics.FONT_SMALL, tr("Motion + heart rate", "参考动作和心率"));
             line(dc, 155, Graphics.FONT_SMALL, tr("Deadline triggers", "截止时间触发"));
             line(dc, 185, Graphics.FONT_SMALL, tr("Sleep stages: N/A", "原生睡眠分期不可读"));

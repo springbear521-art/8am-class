@@ -1,8 +1,8 @@
-# 0.2.1 运行日志与反馈
+# 0.2.2 运行日志与反馈
 
 不创建外部文件时，应用也会把最近128条事件和会话摘要保存到 Application.Storage，首页「运行记录」可以查看。START切换摘要/事件，UP/DOWN切换事件，BACK返回。详情里的时间是 Unix epoch 秒，电脑解析器可转成北京时间。
 
-0.2.1修复整夜累积日志后的启动watchdog。升级时只替换PRG，保留手表上的TXT/BAK及应用Storage，不要用空TXT覆盖已有运行日志。
+0.2.2从最晚起床时间前20分钟才开始动作与心率采样，并只在这20分钟内允许提前唤醒；这不是原生睡眠分期监测。0.2.1已修复整夜累积日志后的启动watchdog。升级时只替换PRG，保留手表上的TXT/BAK及应用Storage，不要用空TXT覆盖已有运行日志。
 
 ## USB文本日志启用
 
@@ -31,7 +31,7 @@ Garmin普通应用不能自动创建此文本日志文件。`System.println`只�
 
 - `native_sleep_s=NA` / `nativeSleepDuration=null`：FR255公开接口无法读取实际睡眠时长，不填造假的数值。
 - `elapsed_s` / `armedElapsedSeconds`：应用运行监测时间。
-- `sampled_s` / `sensorSampledSeconds`：有传感器样本覆盖的时间；目前主要是截止前35分钟。
+- `sampled_s` / `sensorSampledSeconds`：有传感器样本覆盖的时间；从最晚起床时间前20分钟开始，不代表实际睡眠时长。
 - `quiet_s` / `quietSampledSeconds`：采样期间的安静时间，不等于睡眠。
 - `legacy_mode_true_s`：旧模式标记为真、且相邻采样间隔有效的累计时间；`mode_valid/mode_missing`记录可读/不可读样本数。睡眠模式不等于实际入睡。
 

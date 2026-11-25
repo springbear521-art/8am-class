@@ -1,4 +1,10 @@
 module AlarmPolicy {
+    const EARLY_WAKE_SECONDS = 20 * 60;
+
+    function inEarlyWindow(now, deadline) {
+        return now >= deadline - EARLY_WAKE_SECONDS && now < deadline;
+    }
+
     function nextDeadline(wakeMinutes, nowEpoch, currentMinutes, seconds) {
         var remaining = wakeMinutes - currentMinutes;
         if (remaining <= 0) { remaining += 1440; }
